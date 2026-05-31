@@ -167,7 +167,7 @@ export default function LandingPage({
           </h1>
 
           <p className="lux-hero-sub" style={{ maxWidth: "750px" }}>
-            Secure your Solana hot-wallets and AI agents in-process. The Privtract Rust SDK enforces deterministic transaction limits, whitelists, and frequency limits in sub-microseconds with zero network overhead. Let Solana agents run autonomously without manual wallet confirmations.
+            Secure Solana hot-wallets and AI agents in-process. Enforce deterministic transaction limits, whitelists, and frequency controls in sub-microseconds with zero network overhead.
           </p>
 
           <div className="lux-hero-actions" style={{ display: "flex", gap: "16px", justifyContent: "center" }}>

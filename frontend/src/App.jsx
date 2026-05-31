@@ -771,7 +771,7 @@ function App() {
         </nav>
 
         {/* Content Viewport */}
-        <div style={{ width: "100vw", height: "100vh", paddingTop: "90px", paddingBottom: "20px", paddingLeft: "40px", paddingRight: "40px", boxSizing: "border-box", display: "flex", flexDirection: "column", overflow: "hidden", position: "relative", zIndex: 10 }}>
+        <div className="lux-simulator-viewport">
           <SdkSimulatorPage />
         </div>
       </div>

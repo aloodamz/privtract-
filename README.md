@@ -1,6 +1,6 @@
 # Priv-Tract — AI Agent Transaction Policy Engine
 
-[![Rust](https://github.com/aloodamz/Priv-tract-capstone-/actions/workflows/rust.yml/badge.svg)](https://github.com/aloodamz/Priv-tract-capstone-/actions/workflows/rust.yml)
+[![Rust](https://github.com/aloodamz/privtract-sdk/actions/workflows/rust.yml/badge.svg)](https://github.com/aloodamz/privtract-sdk/actions/workflows/rust.yml)
 
 A high-performance, privacy-preserving transaction policy engine and SDK for autonomous AI agents on Solana. Priv-Tract enforces structural and economic boundaries on agent transactions using SHA-256 and BLAKE3 cryptographic identity masking, deterministic policy gates, and atomic spend accounting.
 
@@ -45,15 +45,15 @@ A high-performance, privacy-preserving transaction policy engine and SDK for aut
 ```toml
 # Cargo.toml
 [dependencies]
-priv-tract = { git = "https://github.com/aloodamz/Priv-tract-capstone-.git" }
+priv-tract = { git = "https://github.com/aloodamz/privtract-sdk.git" }
 tokio = { version = "1", features = ["full"] }
 ```
 
 ### Or Clone and Build Locally
 
 ```bash
-git clone https://github.com/aloodamz/Priv-tract-capstone-.git
-cd Priv-tract-capstone-
+git clone https://github.com/aloodamz/privtract-sdk.git
+cd privtract-sdk
 cargo build --release
 ```
 
