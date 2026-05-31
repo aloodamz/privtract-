@@ -961,7 +961,7 @@ function App() {
       </nav>
 
       {/* ── Centered Content Viewport ── */}
-      <main className="app-container">
+      <main className={`app-container ${page === "sdk-simulator" ? "app-container-wide" : ""}`}>
         {/* ── Page Header ── */}
         <div className="page-header">
           <div className="page-title">{PAGE_TITLES[page]}</div>
