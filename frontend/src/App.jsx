@@ -144,60 +144,10 @@ function App() {
 
   const fetchMarketPrices = async (isManual = false) => {
     if (isManual) setIsRefreshing(true);
-    try {
-      // Use a CORS-safe proxy to avoid browser CORS blocks on CoinGecko
-      const COINGECKO_URL = "https://api.coingecko.com/api/v3/simple/price?ids=ethereum,usd-coin,solana,base,bitcoin&vs_currencies=usd&include_24hr_change=true";
-      const res = await fetch(`https://corsproxy.io/?url=${encodeURIComponent(COINGECKO_URL)}`);
-      if (!res.ok) throw new Error("API Limit reached");
-      const data = await res.json();
-      
-      setPrices(prev => {
-        const updated = { ...prev };
-        const mappings = {
-          ethereum: "ETH",
-          "usd-coin": "USDC",
-          solana: "SOL",
-          base: "BASE",
-          bitcoin: "BTC"
-        };
-        
-        Object.entries(mappings).forEach(([cgId, symbol]) => {
-          if (data[cgId]) {
-            const newPrice = data[cgId].usd;
-            const newChange = data[cgId].usd_24h_change || 0;
-            const oldPrice = prev[symbol].price;
-            
-            if (newPrice !== oldPrice) {
-              triggerTick(symbol, newPrice > oldPrice ? "up" : "down");
-            }
-            
-            const history = [...prev[symbol].history];
-            if (history[history.length - 1] !== newPrice) {
-              history.push(newPrice);
-              if (history.length > 10) history.shift();
-            }
-            
-            updated[symbol] = {
-              ...prev[symbol],
-              price: newPrice,
-              change24h: parseFloat(newChange.toFixed(2)),
-              history
-            };
-          }
-        });
-        return updated;
-      });
-      setDataSource("api");
-    } catch (err) {
-      console.warn("CoinGecko rate limit or CORS. Running custom high-fidelity simulated core.", err);
-      setDataSource("simulated");
-      if (isManual) {
-        runSimulationTick();
-      }
-    } finally {
-      if (isManual) {
-        setTimeout(() => setIsRefreshing(false), 600);
-      }
+    setDataSource("simulated");
+    runSimulationTick();
+    if (isManual) {
+      setTimeout(() => setIsRefreshing(false), 600);
     }
   };
 
