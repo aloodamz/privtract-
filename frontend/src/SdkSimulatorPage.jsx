@@ -87,6 +87,15 @@ export default function SdkSimulatorPage() {
   const [activeTab, setActiveTab] = useState("builder"); // "builder" | "config"
   const [shieldMode, setShieldMode] = useState("sha256"); // "none" | "sha256" | "blake3"
   
+  // Toggled policy check states
+  const [enabledGates, setEnabledGates] = useState({
+    3: true,  // Priority Fee Ceiling Check
+    4: true,  // Recipient Whitelist Gate
+    5: true,  // Anchor Instruction Gate
+    7: true,  // Per-Tx Value Ceiling Check
+    10: true, // Global Wallet Daily Cap Check
+  });
+  
   // Transaction fields
   const [txAgentId, setTxAgentId] = useState("1");
   const [txRecipient, setTxRecipient] = useState("SRMu8tBssHvwJZ1J4GoAWb8R749547rK1N6rRc13qD2");
@@ -201,6 +210,7 @@ export default function SdkSimulatorPage() {
       id: 1,
       name: "Kill Switch Check",
       desc: "Emergency shutdown block checking if all transactions are globally halted.",
+      editable: false,
       check: (tx, cfg, state) => {
         if (cfg.wallet.kill_switch) {
           return { pass: false, err: "KillSwitchActive", desc: "Global emergency kill-switch is active." };
@@ -212,6 +222,7 @@ export default function SdkSimulatorPage() {
       id: 2,
       name: "Solana Cluster ID Check",
       desc: "Validates that the transaction targets the correct Solana network.",
+      editable: false,
       check: (tx, cfg, state) => {
         if (tx.cluster_id !== cfg.wallet.allowed_chain_id) {
           return { pass: false, err: "ClusterIdMismatch", desc: `Cluster ID mismatch. Target: ${tx.cluster_id}, Allowed: ${cfg.wallet.allowed_chain_id}` };
@@ -223,6 +234,7 @@ export default function SdkSimulatorPage() {
       id: 3,
       name: "Priority Fee Ceiling Check",
       desc: "Enforces max priority fee limits to protect the wallet from network spikes.",
+      editable: true,
       check: (tx, cfg, state) => {
         if (tx.priority_fee > cfg.wallet.max_gas_price_gwei) {
           return { pass: false, err: "PriorityFeeTooHigh", desc: `Priority fee too high. Limit: ${cfg.wallet.max_gas_price_gwei} micro-lamports, Tx: ${tx.priority_fee}` };
@@ -234,6 +246,7 @@ export default function SdkSimulatorPage() {
       id: 4,
       name: "Recipient Whitelist Gate",
       desc: "Matches recipient address in constant time via cryptographic privacy masks.",
+      editable: true,
       check: (tx, cfg, state) => {
         const isWhitelisted = cfg.wallet.recipient_whitelist.some(addr => {
           const hashes = whitelistHashes[addr];
@@ -257,6 +270,7 @@ export default function SdkSimulatorPage() {
       id: 5,
       name: "Anchor Instruction Gate",
       desc: "Restricts execution to approved program instruction discriminators.",
+      editable: true,
       check: (tx, cfg, state) => {
         if (tx.has_instruction) {
           if (!cfg.wallet.contract_calls_allowed) {
@@ -277,6 +291,7 @@ export default function SdkSimulatorPage() {
       id: 6,
       name: "Agent Authentication Gate",
       desc: "Checks if the agent identifier is registered in the configuration ledger.",
+      editable: false,
       check: (tx, cfg, state) => {
         let matchedAgentId = null;
         for (const [id, agent] of Object.entries(cfg.agents)) {
@@ -310,6 +325,7 @@ export default function SdkSimulatorPage() {
       id: 7,
       name: "Per-Tx Value Ceiling Check",
       desc: "Enforces value limits on single transactions (min of Agent and Wallet thresholds).",
+      editable: true,
       check: (tx, cfg, state, resolvedAgentId) => {
         const agent = cfg.agents[resolvedAgentId];
         const txLimit = Math.min(agent.tx_limit, cfg.wallet.wallet_tx_limit);
@@ -323,6 +339,7 @@ export default function SdkSimulatorPage() {
       id: 8,
       name: "Agent Daily Cap check",
       desc: "Verifies the agent has sufficient budget remaining in their daily allotment.",
+      editable: false,
       check: (tx, cfg, state, resolvedAgentId) => {
         const agentCfg = cfg.agents[resolvedAgentId];
         const agentState = state.agents[resolvedAgentId] || { spend: 0 };
@@ -336,6 +353,7 @@ export default function SdkSimulatorPage() {
       id: 9,
       name: "Agent Daily Frequency Gate",
       desc: "Prevents high-frequency spamming by limiting daily transaction counts.",
+      editable: false,
       check: (tx, cfg, state, resolvedAgentId) => {
         const agentCfg = cfg.agents[resolvedAgentId];
         const agentState = state.agents[resolvedAgentId] || { count: 0 };
@@ -349,6 +367,7 @@ export default function SdkSimulatorPage() {
       id: 10,
       name: "Global Wallet Daily Cap Check",
       desc: "Aggregated global threshold check across all active agent spenders.",
+      editable: true,
       check: (tx, cfg, state) => {
         if (state.wallet_spend + tx.value_lamports > cfg.wallet.wallet_daily_cap) {
           return { pass: false, err: "WalletDailyCapExceeded", desc: `Global wallet-wide daily cap exceeded. Limit: ${cfg.wallet.wallet_daily_cap} lamports, Current: ${state.wallet_spend}` };
@@ -360,11 +379,24 @@ export default function SdkSimulatorPage() {
       id: 11,
       name: "Atomic Commit Phase",
       desc: "Final state modification updating all registers concurrently.",
+      editable: false,
       check: (tx, cfg, state, resolvedAgentId) => {
         return { pass: true, desc: "Atomic commit succeeded. State counters updated.", commit: true };
       }
     }
   ];
+
+  const toggleGate = (gateId) => {
+    setEnabledGates(prev => {
+      const nextVal = !prev[gateId];
+      const gateName = GATES.find(g => g.id === gateId)?.name || `Gate #${gateId}`;
+      addLog(`Policy check ${gateName} ${nextVal ? "ENABLED" : "DISABLED"} by user.`, "info");
+      return {
+        ...prev,
+        [gateId]: nextVal
+      };
+    });
+  };
 
 
 
@@ -415,6 +447,17 @@ export default function SdkSimulatorPage() {
       ? `Some(hex::decode("${txSelector.replace("0x", "")}").unwrap())`
       : `None`;
 
+    // Dynamic active policy listing for Rust comments
+    const activePoliciesList = [];
+    if (enabledGates[3]) activePoliciesList.push("Priority Fee Ceiling");
+    if (enabledGates[4]) activePoliciesList.push("Recipient Whitelist");
+    if (enabledGates[5]) activePoliciesList.push("Anchor Instruction");
+    if (enabledGates[7]) activePoliciesList.push("Per-Tx Value Ceiling");
+    if (enabledGates[10]) activePoliciesList.push("Global Wallet Daily Cap");
+    const policiesComment = activePoliciesList.length > 0 
+      ? `// Active local policies: ${activePoliciesList.join(", ")}`
+      : `// All editable policies disabled! (Only core enforced policies active)`;
+
     return `// Dynamic Rust Code Parity with running simulation
 use priv_tract::priv_tract_sdk::*;
 
@@ -422,6 +465,7 @@ use priv_tract::priv_tract_sdk::*;
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 1. Load embedded engine policies from config
     let sdk = PrivTractSDK::from_config("config.toml")?;
+    ${policiesComment}
 
     // 2. Build SdkTransaction using active privacy shield
     let tx = SdkTransaction {
@@ -445,7 +489,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     Ok(())
 }`;
-  }, [txAgentId, txRecipient, txValueSol, txPriorityFee, txClusterId, txSelector, hasInstruction, shieldMode]);
+  }, [txAgentId, txRecipient, txValueSol, txPriorityFee, txClusterId, txSelector, hasInstruction, shieldMode, enabledGates]);
 
   // Core Simulation Function
   const runVerification = async (stepMode = false) => {
@@ -493,6 +537,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         await new Promise(resolve => setTimeout(resolve, simSpeed));
 
         const gate = GATES[i];
+
+        // Skip disabled policy check
+        if (gate.editable && !enabledGates[gate.id]) {
+          updateGateState(i, "skipped", "Policy check disabled by user.", currentResults);
+          addLog(`[SKIP] Gate #${i + 1} (${gate.name}): Policy check disabled by user.`, "warning");
+          continue;
+        }
+
         const res = gate.check(transaction, config, {
           wallet_spend: walletDailySpend,
           agents: agentSpends
@@ -560,12 +612,30 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     const idx = currentGateIdx;
     const gate = GATES[idx];
+    let currentResults = [...gateResults];
+
+    // Skip disabled policy check
+    if (gate.editable && !enabledGates[gate.id]) {
+      updateGateState(idx, "skipped", "Policy check disabled by user.", currentResults);
+      addLog(`[SKIP] Gate #${idx + 1} (${gate.name}): Policy check disabled by user.`, "warning");
+      
+      if (idx === GATES.length - 1) {
+        setPipelineState("completed");
+        setCurrentGateIdx(null);
+        addLog(`🎉 Transaction safely validation cleared. Receipt committed atomically!`, "success");
+      } else {
+        const nextIdx = idx + 1;
+        setCurrentGateIdx(nextIdx);
+        updateGateState(nextIdx, "active", "Evaluating conditions...", currentResults);
+        addLog(`👉 Walkthrough paused at Gate #${nextIdx + 1}: ${GATES[nextIdx].name}. Click 'Next Gate' to advance.`, "warning");
+      }
+      return;
+    }
+
     const res = gate.check(transaction, config, {
       wallet_spend: walletDailySpend,
       agents: agentSpends
     }, resolvedId);
-
-    let currentResults = [...gateResults];
 
     if (res.pass) {
       if (res.resolvedId) resolvedId = res.resolvedId;
@@ -1168,9 +1238,53 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                       <span style={{ fontSize: "13px", fontWeight: "600", color: status === "active" ? "#ffffff" : status === "failed" ? "var(--danger)" : "#fff" }}>
                         {gate.name}
                       </span>
-                      <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        {/* Enforced or Editable control */}
+                        {gate.editable ? (
+                          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                            <span style={{ fontSize: "9px", color: "var(--text-dim)", textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: "700" }}>
+                              {enabledGates[gate.id] ? "Active" : "Disabled"}
+                            </span>
+                            <div 
+                              className={`toggle-track ${enabledGates[gate.id] ? "on" : ""}`} 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (pipelineState === "simulating" || pipelineState === "paused") return;
+                                toggleGate(gate.id);
+                              }} 
+                              style={{ 
+                                transform: "scale(0.75)", 
+                                transformOrigin: "right center",
+                                cursor: (pipelineState === "simulating" || pipelineState === "paused") ? "not-allowed" : "pointer",
+                                opacity: (pipelineState === "simulating" || pipelineState === "paused") ? 0.5 : 1
+                              }}
+                              title={enabledGates[gate.id] ? "Click to disable policy check" : "Click to enable policy check"}
+                            >
+                              <div className="toggle-knob" />
+                            </div>
+                          </div>
+                        ) : (
+                          <div 
+                            style={{ 
+                              display: "flex", 
+                              alignItems: "center", 
+                              gap: "4px", 
+                              background: "rgba(255,255,255,0.03)", 
+                              border: "1px solid rgba(255,255,255,0.06)", 
+                              padding: "2px 6px", 
+                              borderRadius: "6px",
+                              color: "var(--text-dim)",
+                              fontSize: "9px",
+                              fontWeight: "700"
+                            }}
+                            title="This core system policy is enforced and cannot be disabled in the SDK."
+                          >
+                            <Lock size={9} style={{ color: "var(--text-dim)" }} />
+                            <span>ENFORCED</span>
+                          </div>
+                        )}
                         {icon}
-                      </span>
+                      </div>
                     </div>
 
                     <p style={{ fontSize: "11px", color: "var(--text-dim)", marginTop: "2px", lineHeight: "1.4" }}>
