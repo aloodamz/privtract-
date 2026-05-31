@@ -1,25 +1,33 @@
 # Rust build artifacts
-/target/
+target/
+**/target/
 Cargo.lock.bak
 
 # Frontend build
-frontend/dist/
-frontend/node_modules/
+dist/
+**/dist/
+node_modules/
+**/node_modules/
+dist-ssr/
+**/dist-ssr/
 
 # Environment files — never commit secrets
-frontend/.env
-frontend/.env.local
-frontend/.env.production
 .env
+.env.*
 .env.local
-
-# Config with real addresses — use config.toml.example
-# config.toml
+.env.production
+**/.env
+**/.env.*
+**/.env.local
+**/.env.production
 
 # OS junk
 .DS_Store
+**/Thumbs.db
 Thumbs.db
 
 # IDE
 .idea/
-.vscode/settings.json
+.vscode/
+**/.idea/
+**/.vscode/
