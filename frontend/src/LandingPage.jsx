@@ -567,7 +567,7 @@ export default function LandingPage({
               <a href="/priv_tract_sdk.zip" download="priv_tract_sdk.zip" style={{ color: "var(--accent)" }}>
                 Download SDK ZIP
               </a>
-              <a href="https://github.com/aloodamz/Priv-tract-capstone-">GitHub Source</a>
+              <a href="https://github.com/aloodamz/privtract-sdk">GitHub Source</a>
             </div>
 
             <div className="footer-links-col">

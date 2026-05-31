@@ -237,7 +237,7 @@ export default function DocsPage({ onBack, onEnterDashboard }) {
                 </p>
                 <TerminalBlock
                   title="Cargo.toml"
-                  code={`[dependencies]\npriv-tract = { git = "https://github.com/aloodamz/Priv-tract-capstone-.git" }\ntokio = { version = "1", features = ["full"] }`}
+                  code={`[dependencies]\npriv-tract = { git = "https://github.com/aloodamz/privtract-sdk.git" }\ntokio = { version = "1", features = ["full"] }`}
                   blockId="qs-cargo"
                   copiedId={copiedId}
                   onCopy={triggerCopy}
@@ -619,7 +619,7 @@ export default function DocsPage({ onBack, onEnterDashboard }) {
                 </p>
                 <TerminalBlock
                   title="Cargo.toml"
-                  code={`[dependencies]\npriv-tract = { git = "https://github.com/aloodamz/Priv-tract-capstone-.git" }\ntokio = { version = "1", features = ["full"] }\nserde = { version = "1", features = ["derive"] }\nserde_json = "1"\nreqwest = { version = "0.11", features = ["json"] }\nsha2 = "0.10"\nblake3 = "1.5"\nbs58 = "0.5"\ntoml = "0.8"\nhex = "0.4"`}
+                  code={`[dependencies]\npriv-tract = { git = "https://github.com/aloodamz/privtract-sdk.git" }\ntokio = { version = "1", features = ["full"] }\nserde = { version = "1", features = ["derive"] }\nserde_json = "1"\nreqwest = { version = "0.11", features = ["json"] }\nsha2 = "0.10"\nblake3 = "1.5"\nbs58 = "0.5"\ntoml = "0.8"\nhex = "0.4"`}
                   blockId="inst-cargo"
                   copiedId={copiedId}
                   onCopy={triggerCopy}
