@@ -1,0 +1,14 @@
+[wallet]
+kill_switch = false
+allowed_chain_id = 1
+wallet_tx_limit = "0x1000"
+wallet_daily_cap = "0x10000"
+max_gas_price_gwei = 100
+contract_calls_allowed = true
+recipient_whitelist = ["SRMu8tBssHvwJZ1J4GoAWb8R749547rK1N6rRc13qD2"]
+function_selector_whitelist = ["0xa9059cbb"]
+
+[agents.1]
+tx_limit = "0x1000"
+daily_cap = "0x1000"
+daily_tx_count_limit = 10
