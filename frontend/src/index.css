@@ -5055,5 +5055,79 @@ p code, li code {
   }
 }
 
+/* Pools & Spender Limits Section Mobile Optimizations */
+@media (max-width: 768px) {
+  .lux-pools-section {
+    padding: 60px 0 !important;
+  }
+  .lux-pools-grid {
+    display: flex !important;
+    flex-direction: column-reverse !important;
+    gap: 36px !important;
+  }
+  .lux-pools-right {
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+  .lux-pools-heading {
+    font-size: 2.2rem !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+    margin-bottom: 16px !important;
+  }
+  .lux-pools-desc {
+    font-size: 14.5px !important;
+    line-height: 1.6 !important;
+    text-align: center !important;
+    margin-bottom: 24px !important;
+  }
+  .lux-pools-btn {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    justify-content: center !important;
+    display: inline-flex !important;
+    height: 44px !important;
+  }
+  
+  .lux-faq-section {
+    padding: 60px 0 !important;
+  }
+  .lux-faq-heading {
+    font-size: 2.2rem !important;
+    margin-bottom: 36px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .lux-pools-heading {
+    font-size: 1.8rem !important;
+  }
+  .lux-pools-desc {
+    font-size: 13.5px !important;
+    padding: 0 8px !important;
+  }
+  
+  .lux-pools-table th {
+    padding: 12px 10px !important;
+    font-size: 10px !important;
+  }
+  .lux-pools-table td {
+    padding: 14px 10px !important;
+    font-size: 12px !important;
+  }
+  .lux-table-wrapper {
+    padding: 8px !important;
+    border-radius: 18px !important;
+  }
+  
+  .lux-faq-heading {
+    font-size: 1.8rem !important;
+    margin-bottom: 28px !important;
+  }
+}
+
+
 
 
