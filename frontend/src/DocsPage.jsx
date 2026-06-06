@@ -128,7 +128,8 @@ export default function DocsPage({ onBack, onEnterDashboard }) {
         <div className="lux-nav-inner liquid-glass">
           <button className="lux-btn-ghost" onClick={onBack} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <ArrowLeft size={16} />
-            <span>Back to Landing</span>
+            <span className="lux-nav-text-long">Back to Landing</span>
+            <span className="lux-nav-text-short">Back</span>
           </button>
           
           <div className="lux-nav-brand">
@@ -137,7 +138,8 @@ export default function DocsPage({ onBack, onEnterDashboard }) {
           </div>
 
           <button className="lux-btn-cta liquid-glass" onClick={onEnterDashboard} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <span>Try Simulator</span>
+            <span className="lux-nav-text-long">Try Simulator</span>
+            <span className="lux-nav-text-short">Simulator</span>
             <ArrowRight size={16} />
           </button>
         </div>
@@ -145,39 +147,23 @@ export default function DocsPage({ onBack, onEnterDashboard }) {
 
       {/* ─── MAIN SYSTEM DOCUMENTATION GRID ─── */}
       <div className="lux-container" style={{ paddingTop: "110px", paddingBottom: "80px", position: "relative", zIndex: 10 }}>
-        <div className="lux-showcase-grid" style={{ gridTemplateColumns: "260px 1fr", alignItems: "start", gap: "40px" }}>
+        <div className="docs-layout-grid">
           
           {/* Left Sidebar Navigation */}
-          <aside className="liquid-glass" style={{ borderRadius: "20px", padding: "24px", minHeight: "calc(100vh - 200px)", position: "sticky", top: "110px" }}>
+          <aside className="liquid-glass docs-sidebar">
             {MENU_GROUPS.map((group, idx) => (
-              <div key={idx} style={{ marginBottom: "28px" }}>
-                <h5 style={{ fontSize: "11px", textTransform: "uppercase", color: "rgba(255,255,255,0.3)", letterSpacing: "0.08em", marginBottom: "12px", fontWeight: 600 }}>
+              <div key={idx} style={{ marginBottom: "28px" }} className="docs-sidebar-group-container">
+                <h5 style={{ fontSize: "11px", textTransform: "uppercase", color: "rgba(255,255,255,0.3)", letterSpacing: "0.08em", marginBottom: "12px", fontWeight: 600 }} className="docs-sidebar-group-title">
                   {group.group}
                 </h5>
-                <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "6px" }}>
+                <ul className="docs-sidebar-menu-list">
                   {group.items.map((item) => {
                     const active = activeSection === item.id;
                     return (
                       <li key={item.id}>
                         <button
-                          className={`lux-sidebar-item ${active ? "active" : ""}`}
+                          className={`docs-sidebar-item ${active ? "active" : ""}`}
                           onClick={() => setActiveSection(item.id)}
-                          style={{
-                            width: "100%",
-                            textAlign: "left",
-                            background: active ? "rgba(255,255,255,0.04)" : "transparent",
-                            border: "none",
-                            borderRadius: "10px",
-                            padding: "10px 14px",
-                            color: active ? "#fff" : "rgba(255,255,255,0.55)",
-                            fontSize: "13px",
-                            cursor: "pointer",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "10px",
-                            fontWeight: 500,
-                            transition: "all 0.2s ease",
-                          }}
                         >
                           {item.icon}
                           <span>{item.label}</span>
@@ -191,7 +177,7 @@ export default function DocsPage({ onBack, onEnterDashboard }) {
           </aside>
 
           {/* Right Main Content Panel */}
-          <main className="liquid-glass" style={{ borderRadius: "24px", padding: "40px", minHeight: "calc(100vh - 200px)" }}>
+          <main className="liquid-glass docs-main-content">
             {activeSection === "intro" && (
               <article className="docs-article">
                 <h1 style={{ fontFamily: "Instrument Serif, serif", fontSize: "3.5rem", fontWeight: 400, color: "#fff", marginBottom: "24px" }}>

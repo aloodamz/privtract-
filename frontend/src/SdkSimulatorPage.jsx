@@ -828,7 +828,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
               <Sparkles size={16} color="var(--text-secondary)" />
             </div>
 
-            <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "16px", paddingRight: "4px" }}>
+            <div className="simulator-scrollable-content" style={{ gap: "16px", paddingRight: "4px" }}>
               
               {/* Agent ID Selector */}
               <div className="form-field">
@@ -949,7 +949,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
               </div>
 
               {/* Priority Fee & Cluster ID */}
-              <div className="form-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+              <div className="form-row simulator-form-row-grid">
                 <div className="form-field">
                   <label>Priority Fee (micro-lamp)</label>
                   <input
@@ -1006,7 +1006,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
               <Database size={16} color="var(--text-secondary)" />
             </div>
 
-            <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "16px", paddingRight: "4px" }}>
+            <div className="simulator-scrollable-content" style={{ gap: "16px", paddingRight: "4px" }}>
               
               {/* Emergency Kill Switch */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(255,255,255,0.015)", padding: "10px 14px", borderRadius: "12px", border: "1px solid var(--border)" }}>
@@ -1039,7 +1039,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
               </div>
 
               {/* Wallet limits */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+              <div className="simulator-form-row-grid" style={{ gap: "10px" }}>
                 <div className="form-field">
                   <label>Max Single Tx (lamports)</label>
                   <input
@@ -1182,7 +1182,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
           </div>
 
           {/* Gate sequence layout */}
-          <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "10px", paddingRight: "4px" }}>
+          <div className="simulator-scrollable-content" style={{ gap: "10px", paddingRight: "4px" }}>
             {GATES.map((gate, index) => {
               const res = gateResults[index];
               const status = res?.status || "pending";
@@ -1412,7 +1412,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             </button>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+          <div className="simulator-counters-grid">
             {/* Wallet global Cap */}
             <div style={{ background: "rgba(255,255,255,0.015)", border: "1px solid var(--border)", padding: "12px", borderRadius: "14px" }}>
               <div style={{ fontSize: "11px", color: "var(--text-dim)" }}>Wallet Cumulative Spend</div>

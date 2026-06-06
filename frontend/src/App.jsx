@@ -755,7 +755,8 @@ function App() {
           <div className="lux-nav-inner liquid-glass">
             <button className="lux-btn-ghost" onClick={() => setView("landing")} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <ArrowLeft size={16} />
-              <span>Back to Home</span>
+              <span className="lux-nav-text-long">Back to Home</span>
+              <span className="lux-nav-text-short">Back</span>
             </button>
             
             <div className="lux-nav-brand">
@@ -764,7 +765,8 @@ function App() {
             </div>
 
             <button className="lux-btn-cta liquid-glass" onClick={() => setView("docs")} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <span>Read Docs</span>
+              <span className="lux-nav-text-long">Read Docs</span>
+              <span className="lux-nav-text-short">Docs</span>
               <ArrowRight size={16} />
             </button>
           </div>
